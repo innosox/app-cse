@@ -1,20 +1,66 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react'
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { LogBox } from 'react-native';
 
-export default function App() {
+import bottomTabBarScreen from "./components/bottomTabBarScreen";
+
+import editProfileScreen from "./screens/editProfile/editProfileScreen";
+
+import loginScreen from "./screens/auth/loginScreen";
+import myprofileScreen from './screens/myProfile/myprofileScreen';
+import qrprofileScreen from './screens/myProfile/qrprofileScreen';
+import PaymentScreen from './screens/payment/paymentScreen';
+import AddCardScreen from './screens/payment/addCardScreen';
+import EventScreen from './screens/event/eventScreen';
+import LocationScreen from './screens/event/locationScreen';
+import PayTicketScreen from './screens/event/payTicketScreen';
+import MyTicketScreen from './screens/event/myTicketScreen';
+
+import SearchFriendScreen from './screens/friend/searchFriendScreen';
+
+
+LogBox.ignoreAllLogs();
+const Stack = createStackNavigator();
+
+const App = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator
+          screenOptions={{
+            headerBackTitle: "",
+            //headerShown: false, //para mostrar una cabecera
+        }}
+      >
+        
+        <Stack.Screen 
+          options={{ headerShown: false }}
+          name="Login" component={loginScreen} 
+          
+        />
+        <Stack.Screen options={{ headerShown: false }} name="BottomTabBar" component={bottomTabBarScreen}  />
+
+
+        <Stack.Screen options={{ headerShown: false }} name="EditProfile" component={editProfileScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="Perfil" component={myprofileScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="MiQR" component={qrprofileScreen} />
+        
+        <Stack.Screen options={{ headerShown: false }} name="Payment" component={PaymentScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="AddCardPayment" component={AddCardScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="Event" component={EventScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="EventLocation" component={LocationScreen} />
+
+        <Stack.Screen options={{ headerShown: false }} name="PaymentTicket" component={PayTicketScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="MyTicket" component={MyTicketScreen} />
+
+        <Stack.Screen options={{ headerShown: false }} name="SearchFriend" component={SearchFriendScreen} />
+
+        
+        
+
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
