@@ -8,32 +8,63 @@ import { MaterialIcons, FontAwesome   } from '@expo/vector-icons';
 import { ImageBackground, useColorScheme  } from "react-native";
 import QRCode from 'react-qr-code';
 import { RefreshControl } from "react-native";
-import { mainApiEvent } from "../../api/mainApi";
+import { mainApi, mainApiEvent } from "../../api/mainApi";
 import { color } from "@rneui/themed/dist/config";
 
-const { height } = Dimensions.get('window');
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+33
+
+const { height } = Dimensions.get('window');
 
 const SearchFriendScreen = ({ navigation }) => {
 
-    const data = [
-        { id: '1', name: 'Item 1' },
-        { id: '2', name: 'Item 2' },
-        { id: '3', name: 'Item 3' },
-        // Agrega más datos aquí
-      ];
+    const [friend, setFriend] = useState([]);
 
-      const [searchText, setSearchText] = useState('');
-      const [filteredData, setFilteredData] = useState(data);
-    
-      const handleSearch = (text) => {
-        setSearchText(text);
-        const filtered = data.filter((item) =>
-          item.name.toLowerCase().includes(text.toLowerCase())
-        );
-        setFilteredData(filtered);
-      };
+    const [searchText, setSearchText] = useState('');
+    const [filteredData, setFilteredData] = useState(friend);
+
       
+    const handleSearch = async (text) => {
+        setSearchText(text);
+        if (text !== '') {
+            try {
+
+            const friendData = await getFriend(text);
+            const filteredData = friendData.filter((item) =>
+              item.soci_nomb + ' ' + item.soci_apel
+            );
+            setFilteredData(filteredData);
+
+            } catch (error) {
+            console.error('Error fetching friend data:', error);
+            }
+        } else {
+            setFilteredData([]);
+        }
+    };
+      
+      
+    const getFriend = async (text) => {    
+        try { 
+            const storedToken = await AsyncStorage.getItem('access_token');
+            if (storedToken) {
+                const url = `/buscar/amigo?search=${text}`
+                const response = await mainApi.get(url, {
+                headers: {
+                    ...(storedToken && { Authorization: `Bearer ${storedToken}` })
+                }
+                })
+                const userDataFromAPI = response.data.data;
+                //console.log(userDataFromAPI)
+                //setFriend(userDataFromAPI);
+                return userDataFromAPI;
+            }
+        } catch (error) {
+            Alert.alert('Ha ocurrido un error', `${error}`);    
+            console.log(error)
+        }
+    }
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
@@ -73,10 +104,13 @@ const SearchFriendScreen = ({ navigation }) => {
                 </View>
                 <View style={styles.resultContainer}>
                     {filteredData.map((item) => (
-                    <TouchableOpacity key={item.id}>
-                        <Text style={styles.resultText}>{item.name}</Text>
+
+                    <TouchableOpacity key={item?.soci_id}>
+                        <Text style={styles.resultText}>{item?.soci_nomb} {item?.soci_apel}</Text>
                     </TouchableOpacity>
+
                     ))}
+                    
                 </View>
             </View>
 

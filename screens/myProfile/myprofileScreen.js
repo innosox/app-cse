@@ -465,8 +465,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center', // Centra icono y texto horizontalmente
-
-
       },
     buttonText: {
         color: '#fff',
