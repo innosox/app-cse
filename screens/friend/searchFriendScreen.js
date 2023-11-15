@@ -4,7 +4,7 @@ import { SafeAreaView, View, StatusBar, TextInput, TouchableOpacity, Dimensions,
 from "react-native";
 
 import { Colors, Fonts, Sizes, } from "../../constants/styles";
-import { MaterialIcons, FontAwesome   } from '@expo/vector-icons';
+import { MaterialIcons, FontAwesome, Ionicons   } from '@expo/vector-icons';
 import { ImageBackground, useColorScheme  } from "react-native";
 import QRCode from 'react-qr-code';
 import { RefreshControl } from "react-native";
@@ -13,7 +13,7 @@ import { color } from "@rneui/themed/dist/config";
 
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-33
+
 
 const { height } = Dimensions.get('window');
 
@@ -102,16 +102,42 @@ const SearchFriendScreen = ({ navigation }) => {
                     onChangeText={(text) => handleSearch(text)}
                     />
                 </View>
-                <View style={styles.resultContainer}>
-                    {filteredData.map((item) => (
 
+                {/*<View style={styles.resultContainer}>
+                    {filteredData.map((item) => (
                     <TouchableOpacity key={item?.soci_id}>
                         <Text style={styles.resultText}>{item?.soci_nomb} {item?.soci_apel}</Text>
+                        <Ionicons name="add-circle" size={24} color="black" />
                     </TouchableOpacity>
-
                     ))}
-                    
+                </View>*/}
+
+                <View style={styles.resultContainer}>
+                {filteredData.map((item) => (
+                    <TouchableOpacity key={item?.soci_id}>
+                    <View style={styles.resultText}>
+                        <Image
+                        source={{ uri: 'https://socioemelec.com/fotos/socios/foto_socio_'+item?.soci_id+'.jpg' }}
+                        style={{ width: 30.0, height: 30.0, borderRadius: 25.0, marginLeft: 20 }}
+                        />
+                        <View style={{ marginLeft: 10, maxWidth: 200 }}>
+                        <Text style={{ fontSize: 12, textAlign: 'left' }}>
+                            {item?.soci_nomb} {item?.soci_apel}
+                        </Text>
+                        <Text style={{ fontSize: 12, textAlign: 'left', ...Fonts.grayColor12SemiBold }}>
+                        {item?.soci_cedu}
+                        </Text>
+                        </View>
+                        <Ionicons name="add-circle" size={24} color="black" />
+                    </View>
+                    </TouchableOpacity>
+                ))}
                 </View>
+
+
+
+
+
             </View>
 
 
@@ -158,13 +184,17 @@ const styles = StyleSheet.create({
       },
       resultContainer: {
         marginTop: 10,
+        //backgroundColor: '#D5D5D5',
+        borderRadius: 15,
+        borderWidth: 1,
       },
       resultText: {
-        fontSize: 16,
-        padding: 10,
-        borderWidth: 1,
-        borderColor: Colors.primaryColor,
-        borderRadius: 5,
+        flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+        fontSize: 12,
+        padding: 7,
+        //borderWidth: 1,
+        //borderColor: Colors.primaryColor,
+        borderRadius: 20,
         marginBottom: 5,
       },
 });
