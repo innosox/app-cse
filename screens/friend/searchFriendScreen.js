@@ -19,6 +19,8 @@ const { height } = Dimensions.get('window');
 
 const SearchFriendScreen = ({ navigation }) => {
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const [friend, setFriend] = useState([]);
 
     const [searchText, setSearchText] = useState('');
@@ -65,6 +67,28 @@ const SearchFriendScreen = ({ navigation }) => {
             console.log(error)
         }
     }
+
+    const addFriend = async  (soci_id_recep, soci_mail, soci_nomb) => {
+        setIsLoading(true);
+        try { 
+            const storedToken = await AsyncStorage.getItem('access_token');
+            if (storedToken) {
+                const body = { soci_id_recep: soci_id_recep, soci_mail: soci_mail, soci_nomb: soci_nomb };
+                const response = await mainApi.post('/agregar/amigo', body, {
+                    headers: {
+                        ...(storedToken && { Authorization: `Bearer ${storedToken}` })
+                    }
+                })
+                setIsLoading(false);
+                Alert.alert('Genial', 'Solicitud de amistad, enviada correctamente', [
+                    {text: 'OK',}
+                ]);
+            }
+        } catch (error) {
+            Alert.alert('Ha ocurrido un error', `${error}`);    
+            setIsLoading(false);
+        }
+    };
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
@@ -114,7 +138,10 @@ const SearchFriendScreen = ({ navigation }) => {
 
                 <View style={styles.resultContainer}>
                 {filteredData.map((item) => (
-                    <TouchableOpacity key={item?.soci_id}>
+                    <TouchableOpacity key={item?.soci_id}
+                    disabled={isLoading} 
+                    onPress={() => addFriend(item?.soci_id, item?.soci_mail, item?.soci_nomb)}
+                    >
                     <View style={styles.resultText}>
                         <Image
                         source={{ uri: 'https://socioemelec.com/fotos/socios/foto_socio_'+item?.soci_id+'.jpg' }}
@@ -132,6 +159,7 @@ const SearchFriendScreen = ({ navigation }) => {
                     </View>
                     </TouchableOpacity>
                 ))}
+                ListFriend
                 </View>
 
 

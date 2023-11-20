@@ -18,6 +18,7 @@ import PayTicketScreen from './screens/event/payTicketScreen';
 import MyTicketScreen from './screens/event/myTicketScreen';
 
 import SearchFriendScreen from './screens/friend/searchFriendScreen';
+import ListFriendScreen from './screens/friend/ListFriendScreen';
 
 
 LogBox.ignoreAllLogs();
@@ -54,6 +55,8 @@ const App = () => {
         <Stack.Screen options={{ headerShown: false }} name="MyTicket" component={MyTicketScreen} />
 
         <Stack.Screen options={{ headerShown: false }} name="SearchFriend" component={SearchFriendScreen} />
+
+        <Stack.Screen options={{ headerShown: false }} name="ListFriend" component={ListFriendScreen} />
 
         
         

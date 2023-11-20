@@ -49,49 +49,49 @@ export const Fonts = {
   },
 
   primaryColor12SemiBold: {
-      color: '#2269BE',
+      color: '#0134bd',
       fontSize: 12,
     //  fontFamily: 'NunitoSans_SemiBold',
   },
 
   primaryColor14SemiBold: {
-      color: '#2269BE',
+      color: '#0134bd',
       fontSize: 14,
      // fontFamily: 'NunitoSans_SemiBold',
   },
 
   primaryColor12Bold: {
-      color: '#2269BE',
+      color: '#0134bd',
       fontSize: 12,
      // fontFamily: 'NunitoSans_Bold',
   },
 
   primaryColor14Bold: {
-      color: '#2269BE',
+      color: '#0134bd',
       fontSize: 14,
      // fontFamily: 'NunitoSans_Bold',
   },
 
   primaryColor16Bold: {
-      color: '#2269BE',
+      color: '#0134bd',
       fontSize: 16,
    //   fontFamily: 'NunitoSans_Bold',
   },
 
   primaryColor18Bold: {
-      color: '#2269BE',
+      color: '#0134bd',
       fontSize: 18,
    //   fontFamily: 'NunitoSans_Bold',
   },
 
   primaryColor18ExtraBold: {
-      color: '#2269BE',
+      color: '#0134bd',
       fontSize: 18,
     //  fontFamily: 'NunitoSans_ExtraBold',
   },
 
   primaryColor20ExtraBold: {
-      color: '#2269BE',
+      color: '#0134bd',
       fontSize: 20,
     //  fontFamily: 'NunitoSans_ExtraBold',
   },
@@ -200,7 +200,6 @@ export const Fonts = {
 }
 
 export const Colors = {
-  //primaryColor: '#2269BE',
   primaryColor: '#0134bd',
   
   whiteColor: '#FFFFFF',
