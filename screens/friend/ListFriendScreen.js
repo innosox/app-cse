@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { SafeAreaView, View, StatusBar, TextInput, TouchableOpacity, Dimensions, ScrollView, Image, 
-    StyleSheet, Text, FlatList, Alert, Button } 
+    StyleSheet, Text, FlatList, Alert, Button, Animated } 
 from "react-native";
 
 import { Colors, Fonts, Sizes, } from "../../constants/styles";
@@ -14,47 +14,102 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TabView, SceneMap } from 'react-native-tab-view';
 
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+
+
 const { height } = Dimensions.get('window');
 
 const ListFriendScreen = ({ navigation }) => {
 
     const [isLoading, setIsLoading] = useState(false);
+    const Tab = createMaterialTopTabNavigator();
+
+    const contacts = [
+      {
+        id: 1,
+        name: 'Jose Pillegi',
+        description: 'Socio desde 2017/01',
+        image: {uri: 'https://pbs.twimg.com/profile_images/477815932723929088/TNR3pbtd_400x400.jpeg'} 
+      },
+      {
+        id: 2,
+        name: 'Marlon Vera',
+        description: 'Socio desde 2020/03',
+        image: {uri: 'https://dmxg5wxfqgb4u.cloudfront.net/2023-08/VERA_MARLON_08-19.png'}
+
+      },
+      {
+        id: 3,
+        name: 'Daniel Noboa',
+        description: 'Socio desde 2017/06',
+        //image: require('../../assets/images/users/fotoperfil.jpeg'), // Ruta de la imagen
+        image: {uri: 'https://pbs.twimg.com/profile_images/1661543581067124737/0jrto2L3_400x400.jpg'}
+      }
+    ];
 
     const Friends = () => (
-      <View style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
-        {/* Content for the First Tab */}
-        <Text>Mis amigos</Text>
-      </View>
-    );
-  
-    const PendingConfirmation = () => (
-      <View style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
-        {/* Content for the Second Tab */}
-        <Text>Amigos pendientes por confirmar</Text>
-      </View>
-    );
-    
-    const PendingAccept = () => (
-        <View style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
-          {/* Content for the Second Tab */}
-          <Text>Solicitudes pendientes por aceptar</Text>
+      
+      <View style={{ flex: 1, marginBottom: 10, padding: 5  }}>
+        <View style={styles.tabFriend}>
+          <Text style={{ textAlign: 'center', margin: Sizes.fixPadding * 2.0, ...Fonts.blackColor20Bold }}>
+            Mis amigos
+          </Text>
+          <Ionicons name="add-circle" size={40} color="black" onPress={() => navigation.push('SearchFriend')}/>
         </View>
-      );
+        {contacts.map((contact) => (
+        <View  style={styles.card}>
+          <View style={styles.contactContainer} key={contact.id}>
+            <Image source={contact.image} style={styles.contactImage} />
+            <View style={styles.contactInfo}>
+              <Text style={styles.contactName}>{contact.name}</Text>
+              <Text style={styles.contactDescription}>{contact.description}</Text>
+            </View>
+          </View>
+        </View>
+        ))}
+      </View>
+      
+    );
 
-    const renderScene = SceneMap({
-      first: Friends,
-      second: PendingConfirmation,
-      third: PendingAccept,
-    });
-  
-    const layout = useWindowDimensions();
-  
-    const [index, setIndex] = React.useState(0);
-    const [routes] = React.useState([
-      { key: 'first', title: 'Amigos' },
-      { key: 'second', title: 'Confirmar' },
-      { key: 'third', title: 'Aceptar' },
-    ]);
+    const FriendPending = () => (
+      <View style={{ flex: 1, marginBottom: 10, padding: 5  }}>
+        <Text style={{ textAlign: 'left', margin: Sizes.fixPadding * 2.0, ...Fonts.blackColor20Bold }}>
+          Solicitudes por confirmar
+        </Text>
+        {contacts.map((contact) => (
+        <View  style={styles.card}>
+          <View style={styles.contactContainer} key={contact.id}>
+            <Image source={contact.image} style={styles.contactImage} />
+            <View style={styles.contactInfo}>
+              <Text style={styles.contactName}>{contact.name}</Text>
+              <Text style={styles.contactDescription}>{contact.description}</Text>
+            </View>
+          </View>
+        </View>
+        ))}
+      </View>
+    );
+
+    const FriendsToAccept = () => (
+      <View style={{ flex: 1, marginBottom: 10, padding: 5  }}>
+        <Text style={{ textAlign: 'left', margin: Sizes.fixPadding * 2.0, ...Fonts.blackColor20Bold }}>
+          Solicitudes de amistad
+        </Text>
+        {contacts.map((contact) => (
+        <View  style={styles.card}>
+          <View style={styles.contactContainer} key={contact.id}>
+            <Image source={contact.image} style={styles.contactImage} />
+            <View style={styles.contactInfo}>
+              <Text style={styles.contactName}>{contact.name}</Text>
+              <Text style={styles.contactDescription}>{contact.description}</Text>
+            </View>
+          </View>
+        </View>
+        ))}
+      </View>
+    );
 
 
     return (
@@ -81,15 +136,21 @@ const ListFriendScreen = ({ navigation }) => {
           </View>
           {/* FIN DE CABECERA */}
 
-        {/* VISTA DE PESTAÑA */}
-        <TabView
-          navigationState={{ index, routes }}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          initialLayout={{ width: layout.width }}
-          style={{ marginTop: 0, backgroundColor: Colors.primaryColor }} // Ajusta este valor según tus necesidades
-          tabBarStyle={{ backgroundColor: '#ffghr' }} // Ajusta el color de fondo de las pestañas
-        />
+          <Tab.Navigator
+            tabBarOptions={{
+              activeTintColor: Colors.primaryColor,
+              inactiveTintColor: 'gray',
+              labelStyle: {
+                fontSize: 14,
+                fontWeight: 'bold',
+              },
+              style: {backgroundColor: 'white',},
+            }}
+          >
+            <Tab.Screen name="AMIGOS" component={Friends} />
+            <Tab.Screen name="PENDIENTE" component={FriendPending} />
+            <Tab.Screen name="ACEPTAR" component={FriendsToAccept} />
+          </Tab.Navigator>
 
 
         </View>
@@ -115,6 +176,44 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
+    card: {
+      backgroundColor: '#fff',
+      //padding: 3,
+      //borderRadius: 8,
+      //marginVertical: 2,
+      elevation: 5, // Ajusta este valor para el nivel de sombra deseado
+      shadowColor: '#000', // Solo para iOS
+      shadowOffset: { width: 0, height: 2 }, // Solo para iOS
+      shadowOpacity: 0.2, // Solo para iOS
+      shadowRadius: 4, // Solo para iOS
+    },
+    contactContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 10,
+    },
+    contactImage: {
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+      marginRight: 30,
+    },
+    contactInfo: {
+      flex: 1,
+    },
+    contactName: {
+      fontSize: 18,
+    },
+    contactDescription: {
+      color: 'gray',
+    },
+    tabFriend:{
+      flexDirection: 'row',
+      justifyContent: 'space-between', 
+      alignItems: 'center',
+      marginBottom: 5,
+    }
+
 });
 
 export default ListFriendScreen;

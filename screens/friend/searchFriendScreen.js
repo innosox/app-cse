@@ -33,10 +33,10 @@ const SearchFriendScreen = ({ navigation }) => {
             try {
 
             const friendData = await getFriend(text);
-            const filteredData = friendData.filter((item) =>
-              item.soci_nomb + ' ' + item.soci_apel
-            );
-            setFilteredData(filteredData);
+            /*const filteredData = friendData.filter((item) =>
+                <Text>{item?.soci_nomb} {item?.soci_apel}</Text>
+            );*/
+            setFilteredData(friendData);
 
             } catch (error) {
             console.error('Error fetching friend data:', error);
@@ -60,7 +60,7 @@ const SearchFriendScreen = ({ navigation }) => {
                 const userDataFromAPI = response.data.data;
                 //console.log(userDataFromAPI)
                 //setFriend(userDataFromAPI);
-                return userDataFromAPI;
+                return userDataFromAPI ?? null;
             }
         } catch (error) {
             Alert.alert('Ha ocurrido un error', `${error}`);    
@@ -148,18 +148,17 @@ const SearchFriendScreen = ({ navigation }) => {
                         style={{ width: 30.0, height: 30.0, borderRadius: 25.0, marginLeft: 20 }}
                         />
                         <View style={{ marginLeft: 10, maxWidth: 200 }}>
-                        <Text style={{ fontSize: 12, textAlign: 'left' }}>
-                            {item?.soci_nomb} {item?.soci_apel}
-                        </Text>
-                        <Text style={{ fontSize: 12, textAlign: 'left', ...Fonts.grayColor12SemiBold }}>
-                        {item?.soci_cedu}
-                        </Text>
+                            <Text style={{ fontSize: 12, textAlign: 'left' }}>
+                                {item?.soci_nomb} {item?.soci_apel}
+                            </Text>
+                            <Text style={{ fontSize: 12, textAlign: 'left', ...Fonts.grayColor12SemiBold }}>
+                                {item?.soci_cedu}
+                            </Text>
                         </View>
                         <Ionicons name="add-circle" size={24} color="black" />
                     </View>
                     </TouchableOpacity>
                 ))}
-                ListFriend
                 </View>
 
 

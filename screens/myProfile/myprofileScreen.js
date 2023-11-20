@@ -340,7 +340,7 @@ const MyprofileScreen = ({ navigation }) => {
 
                 <View  style={{ flex: 1, marginBottom: 50, padding: 20 }}>
                   <View  style={styles.card}>
-                  <Text style={{ textAlign: 'center', margin: Sizes.fixPadding * 2.0, ...Fonts.blackColor20Bold }}>
+                    <Text style={{ textAlign: 'center', margin: Sizes.fixPadding * 2.0, ...Fonts.blackColor20Bold }}>
                       MIS AMIGOS
                     </Text>
                     {contacts.map((contact) => (

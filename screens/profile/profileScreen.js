@@ -83,7 +83,7 @@ const ProfileScreen = ({ navigation }) => {
                 <View>
                     <TouchableOpacity
                         activeOpacity={0.8}
-                        onPress={() => navigation.push('SearchFriend')}
+                        onPress={() => navigation.push('ListFriend')}
                     >
                         {profileOptionsSort({ optionTitle: 'Amigos', optionDescription: 'Mis Amigos' })}
                     </TouchableOpacity>
@@ -92,7 +92,7 @@ const ProfileScreen = ({ navigation }) => {
                     />
                     <TouchableOpacity
                         activeOpacity={0.8}
-                        onPress={() => navigation.navigate('ListFriend')}
+                        //onPress={() => navigation.navigate('ListFriend')}
                     >
                         {profileOptionsSort({ optionTitle: 'Boletos', optionDescription: 'Lista de boletos comprados' })}
                     </TouchableOpacity>
