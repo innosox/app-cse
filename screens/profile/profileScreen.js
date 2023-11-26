@@ -168,7 +168,7 @@ const ProfileScreen = ({ navigation }) => {
                             onPress={() => setshowLogoutDialog(false)}
                             style={styles.cancelAndLogoutButtonStyle}
                         >
-                            <Text style={{ ...Fonts.whiteColor18ExtraBold }}>
+                            <Text style={{ ...Fonts.blackColor18Bold }}>
                                 No
                             </Text>
                         </TouchableOpacity>
@@ -178,7 +178,7 @@ const ProfileScreen = ({ navigation }) => {
                                 setshowLogoutDialog(false)
                                 navigation.push('Login')
                             }}
-                            style={styles.cancelAndLogoutButtonStyle}
+                            style={styles.confimAndLogoutButtonStyle}
                         >
                             <Text style={{ ...Fonts.whiteColor18ExtraBold }}>
                             SI
@@ -226,16 +226,27 @@ const styles = StyleSheet.create({
     logoutDialogStyle: {
         width: '80%',
         padding: 0.0,
-        borderRadius: Sizes.fixPadding + 5.0,
+        borderRadius: Sizes.fixPadding + 1.0,
         overflow: 'hidden'
     },
     cancelAndLogoutButtonStyle: {
+        backgroundColor: '#E1E1E1',
+        color: 'black',
+        borderRadius: Sizes.fixPadding + 25.0,
+        shadowColor: Colors.primaryColor,
+        elevation: 5.0,
+        //borderWidth: 1.0,
+        flex: 1, marginHorizontal: Sizes.fixPadding,
+        paddingVertical: Sizes.fixPadding,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    confimAndLogoutButtonStyle: {
         backgroundColor: Colors.primaryColor,
         borderRadius: Sizes.fixPadding + 25.0,
         shadowColor: Colors.primaryColor,
         elevation: 5.0,
-        //borderColor: 'rgba(34, 105, 190, 0.7)',
-        borderWidth: 1.0,
+        //borderWidth: 1.0,
         flex: 1, marginHorizontal: Sizes.fixPadding,
         paddingVertical: Sizes.fixPadding,
         alignItems: 'center',
