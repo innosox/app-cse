@@ -17,7 +17,7 @@ import { TabView, SceneMap } from 'react-native-tab-view';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-
+import moment from "moment/moment";
 
 const { height } = Dimensions.get('window');
 
@@ -49,14 +49,29 @@ const ListFriendScreen = ({ navigation }) => {
         </View>
         {friends.map((contact) => (
         <View  style={styles.card}>
-          <View style={styles.contactContainer} key={contact?.soci_id_emi}>
-            <Image 
-            //source={`https://socioemelec.com/fotos/socios/foto_socio_{contact.soci_id_recep}.jpg`} 
-            source={{ uri: `https://socioemelec.com/fotos/socios/foto_socio_${contact?.soci_id_recep}.jpg` }}
-            style={styles.contactImage} />
+          <View style={styles.contactContainer} key={contact?.soci_id_recep}>
+              {contact?.soci_id_recep ? (
+              <Image 
+                //source={`https://socioemelec.com/fotos/socios/foto_socio_{contact.soci_id_recep}.jpg`} 
+                source={{ uri: `https://socioemelec.com/fotos/socios/foto_socio_${contact?.soci_id_recep}.jpg` }}
+                style={styles.contactImage} />
+              ) : (
+                <Image
+                source={require('../../assets/images/avatar.jpg')}
+                //source={{uri: 'asset:/favicon.png'}}
+                style={styles.contactImage} />
+              )}
             <View style={styles.contactInfo}>
               <Text style={styles.contactName}>{contact?.soci_ami_nom}</Text>
-              <Text style={styles.contactDescription}>{contact?.cata_deta}</Text>
+              {contact?.soci_desd ? (
+                <Text style={styles.contactDescription}>
+                  Socio desde: {moment(contact?.soci_desd).format('YYYY/MM')}
+                </Text>
+              ) : (
+                <Text style={styles.contactDescription}>
+                  Fecha no disponible
+                </Text>
+              )}
             </View>
           </View>
         </View>
@@ -86,7 +101,17 @@ const ListFriendScreen = ({ navigation }) => {
             style={styles.contactImage} />
             <View style={styles.contactInfo}>
               <Text style={styles.contactName}>{contact?.socio_receptor?.soci_nomb} {contact?.socio_receptor?.soci_apel}</Text>
-              <Text style={styles.contactDescription}>{contact?.catalogo?.cata_deta}</Text>
+              {/* Validación para la fecha */}
+              {contact?.socio_receptor.soci_desd ? (
+                <Text style={styles.contactDescription}>
+                  Socio desde: {moment(contact?.socio_receptor?.soci_desd).format('YYYY/MM')}
+                </Text>
+              ) : (
+                <Text style={styles.contactDescription}>
+                  Fecha no disponible
+                </Text>
+              )}
+              {/* Fin de la validación */}
             </View>
           </View>
         </View>
@@ -293,6 +318,7 @@ const ListFriendScreen = ({ navigation }) => {
           </View>
           {/* FIN DE CABECERA */}
           <Tab.Navigator
+            /* 
             tabBarOptions={{
               activeTintColor: Colors.primaryColor,
               inactiveTintColor: 'gray',
@@ -300,8 +326,9 @@ const ListFriendScreen = ({ navigation }) => {
                 fontSize: 14,
                 fontWeight: 'bold',
               },
-              style: {backgroundColor: 'white',},
-            }}
+              style: {backgroundColor: 'white',}
+            }} 
+          */
           >
             <Tab.Screen name="AMIGOS" component={Friends} />
             <Tab.Screen name="PENDIENTE" component={FriendPending} />

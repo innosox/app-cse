@@ -12,6 +12,7 @@ import { mainApi } from "../../api/mainApi";
 import { format, parse } from 'date-fns';
 import Share from 'react-native-share';
 import ViewShot from "react-native-view-shot";
+import moment from "moment";
 
 const MyprofileScreen = ({ navigation }) => {
 
@@ -22,11 +23,13 @@ const MyprofileScreen = ({ navigation }) => {
     const [userData, setUserData] = useState(null); // Estado para almacenar los datos de usuario
     const [socioDeuda, setSocioDeuda] = useState([]); // Estado para almacenar los datos de usuario
     const viewRef = useRef(null);
+    const [friends, setFriends] = useState([]); 
 
     const {width, height} = Dimensions.get('window');
     const actualImageHeight = 200;
     const actualImageWidth = 300;
-
+    const [visibleFriends, setVisibleFriends] = useState(5); // Mostrar los primeros cinco amigos
+    const [showAll, setShowAll] = useState(false);
 
     const dimensions = Dimensions.get('window');
     const imageHeight = Math.round(dimensions.width * 10 / 36);
@@ -43,6 +46,7 @@ const MyprofileScreen = ({ navigation }) => {
         console.log('Error fetching token from AsyncStorage:', error);
       }
     };
+
 
   useEffect(() => {
     getTokenFromStorage();
@@ -92,25 +96,39 @@ const MyprofileScreen = ({ navigation }) => {
                   ...(storedToken && { Authorization: `Bearer ${storedToken}` })
               }
             })
-
-            // Puedes reemplazar la URL con la que necesitas para tu petición
             //Alert.alert('Petición Exitosa', `${JSON.stringify(response.data.message)}`);
             const userDataFromAPI = response.data;
-            // Actualiza el estado con los datos del usuario
             setSocioDeuda(userDataFromAPI);
-            //console.log(userDataFromAPI)
             //Alert.alert('Petición Exitosa', 'el token es valido');
           }
       } catch (error) {
           Alert.alert('Ha ocurrido un error', `${error}`);    
           console.log(error)
-          //navigation.navigate('Login');
       }
-      
+    }
+
+    const getFriends = async () => {    
+      try { 
+          const storedToken = await AsyncStorage.getItem('access_token');
+          if (storedToken ) {
+            const url = `/amigo`;
+            const response = await mainApi.get(url, {
+              headers: {
+                  ...(storedToken && { Authorization: `Bearer ${storedToken}` })
+              }
+            })
+            const dataFriend = response.data;
+            setFriends(dataFriend);
+          }
+      } catch (error) {
+          Alert.alert('Ha ocurrido un error', `${error}`);    
+          console.log(error)
+      }
     }
 
     useEffect(() => {
       obtenerDataUsuario({})
+      getFriends();
       }, []);
 
     useEffect(() => {
@@ -146,32 +164,6 @@ const MyprofileScreen = ({ navigation }) => {
       obtenerDeuda();
     };
 
-
-    const contacts = [
-      {
-        id: 1,
-        name: 'Jose Pillegi',
-        description: 'Socio desde 2017/01',
-        image: {uri: 'https://pbs.twimg.com/profile_images/477815932723929088/TNR3pbtd_400x400.jpeg'} //require('../../assets/images/users/fotoperfil.jpeg'), // Ruta de la imagen
-      },
-      {
-        id: 2,
-        name: 'Marlon Vera',
-        description: 'Socio desde 2020/03',
-        //image: require('../../assets/images/users/fotoperfil.jpeg'), // Ruta de la imagen
-        image: {uri: 'https://dmxg5wxfqgb4u.cloudfront.net/2023-08/VERA_MARLON_08-19.png'}
-
-      },
-      {
-        id: 3,
-        name: 'Daniel Noboa',
-        description: 'Socio desde 2017/06',
-        //image: require('../../assets/images/users/fotoperfil.jpeg'), // Ruta de la imagen
-        image: {uri: 'https://pbs.twimg.com/profile_images/1661543581067124737/0jrto2L3_400x400.jpg'}
-      }
-
-    ];
-
     const shareContent = async () => {
       try {
           if (viewRef.current) {
@@ -191,7 +183,6 @@ const MyprofileScreen = ({ navigation }) => {
           }
       };
     };
-    
     
 
     return (
@@ -337,24 +328,52 @@ const MyprofileScreen = ({ navigation }) => {
                   )}
                 {/* Fin de Alicuotas */}
 
-
-                <View  style={{ flex: 1, marginBottom: 50, padding: 20 }}>
-                  <View  style={styles.card}>
+                <View style={{ flex: 1, marginBottom: 50, padding: 20 }}>
+                  <View style={styles.card}>
                     <Text style={{ textAlign: 'center', margin: Sizes.fixPadding * 2.0, ...Fonts.blackColor20Bold }}>
                       MIS AMIGOS
                     </Text>
-                    {contacts.map((contact) => (
-                    <View  style={styles.card}>
-                      <View style={styles.contactContainer} key={contact.id}>
-                        <Image source={contact.image} style={styles.contactImage} />
-                        <View style={styles.contactInfo}>
-                          <Text style={styles.contactName}>{contact.name}</Text>
-                          <Text style={styles.contactDescription}>{contact.description}</Text>
+                    <View style={{ flex: 1, marginBottom: 10, padding: 5 }}>
+                      {friends.slice(0, visibleFriends).map((contact, index) => (
+                        <View style={styles.contactContainer} key={index}>
+                          {contact?.soci_id_recep ? (
+                            <Image 
+                              source={{ uri: `https://socioemelec.com/fotos/socios/foto_socio_${contact?.soci_id_recep}.jpg` }}
+                              style={styles.contactImage}
+                            />
+                          ) : (
+                            <Image
+                              source={require('../../assets/images/avatar.jpg')}
+                              style={styles.contactImage}
+                            />
+                          )}
+                          <View style={styles.contactInfo}>
+                            <Text style={styles.contactName}>{contact?.soci_ami_nom}</Text>
+                            {contact?.soci_desd ? (
+                              <Text style={styles.contactDescription}>
+                                Socio desde: {moment(contact?.soci_desd).format('YYYY/MM')}
+                              </Text>
+                            ) : (
+                              <Text style={styles.contactDescription}>
+                                Fecha no disponible
+                              </Text>
+                            )}
+                          </View>
                         </View>
-                      </View>
+                      ))}
+                      {!showAll && friends.length > 5 && (
+                        <TouchableOpacity 
+                        style={[styles.buttonShowAll]}
+                        onPress={() => navigation.push('ListFriend')}
+                        >
+                          <Text style={{ textAlign: 'center', marginVertical: 10 }}>
+                            Mostrar todo
+                          </Text>
+                        </TouchableOpacity>
+                      )}
                     </View>
-                    ))}
-                  </View>
+                </View>
+
 
                   {/* inicio de compartir en redes */}
                   <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 30 }}>
@@ -551,19 +570,15 @@ const styles = StyleSheet.create({
         color: 'white',
         //fontWeight: 'bold',
       },
-
-
-
       contactContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         padding: 10,
-
       },
       contactImage: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
+        width: 75,
+        height: 75,
+        borderRadius: 45,
         marginRight: 30,
       },
       contactInfo: {
@@ -575,8 +590,6 @@ const styles = StyleSheet.create({
       contactDescription: {
         color: 'gray',
       },
-
-
 
       containerShare: {
         flex: 1,
@@ -627,6 +640,16 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 16,
     },
+
+    buttonShowAll: {
+      paddingVertical: 3,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: Sizes.fixPadding + 25.0,
+      backgroundColor: '#E1E1E1',
+      color: 'black',
+    },
+
 
 });
 
