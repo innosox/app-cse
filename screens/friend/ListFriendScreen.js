@@ -95,12 +95,12 @@ const ListFriendScreen = ({ navigation }) => {
         </Text>
         {friendPending.map((contact) => (
         <View  style={styles.card}>
-          <View style={styles.contactContainer} key={contact?.socio_receptor?.soci_id}>
+          <View style={styles.contactContainer} key={contact?.soci_id_recep}>
             <Image 
             source={{ uri: `https://socioemelec.com/fotos/socios/foto_socio_${contact?.socio_receptor?.soci_id}.jpg` }}
             style={styles.contactImage} />
             <View style={styles.contactInfo}>
-              <Text style={styles.contactName}>{contact?.socio_receptor?.soci_nomb} {contact?.socio_receptor?.soci_apel}</Text>
+              <Text style={styles.contactName}>{contact?.socio_receptor?.soci_nomb} {contact?.socio_receptor?.soci_apel} {contact?.socio_receptor?.soci_id}</Text>
               {/* Validación para la fecha */}
               {contact?.socio_receptor.soci_desd ? (
                 <Text style={styles.contactDescription}>
@@ -190,7 +190,7 @@ const ListFriendScreen = ({ navigation }) => {
         </Text>
         {friendAccept.map((contact) => (
         <View  style={styles.card}>
-          <View style={styles.contactContainer} key={contact?.socio_emisor?.soci_id}>
+          <View style={styles.contactContainer} key={contact?.soci_id_emi}>
             <Image 
             source={{ uri: `https://socioemelec.com/fotos/socios/foto_socio_${contact?.socio_emisor?.soci_id}.jpg` }}
             style={styles.contactImage} />
